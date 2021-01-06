@@ -39,7 +39,7 @@ const OverrideUserAgentUsingClientHints = hints => {
     newUA += "; ";
     // Working around the lack of bitness value.
     if (values.architecture == "x86") {
-      newUA += "x64";
+      newUA += "Win64; x64";
     } else {
       // TODO: What's the UA string for windows over ARM??
       newUA += "arm";
