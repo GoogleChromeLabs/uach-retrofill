@@ -41,8 +41,7 @@ const OverrideUserAgentUsingClientHints = hints => {
     if (values.architecture == "x86") {
       newUA += "Win64; x64";
     } else {
-      // TODO: What's the UA string for windows over ARM??
-      newUA += "arm";
+      newUA += "ARM";
     }
     return newUA;
   }
