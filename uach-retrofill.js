@@ -46,11 +46,10 @@ async function getUserAgentUsingClientHints(hints) {
     newUA += values.platformVersion;
     newUA += '; ';
     // Working around the lack of bitness value.
-    if (values.architecture == 'x86') {
-      newUA += 'x64';
+    if (values.architecture == "x86") {
+      newUA += "Win64; x64";
     } else {
-      // TODO: What's the UA string for windows over ARM??
-      newUA += 'arm';
+      newUA += "ARM";
     }
     return newUA;
   }
