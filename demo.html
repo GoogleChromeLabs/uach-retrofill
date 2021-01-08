@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  label {
+    display: block;
+  }
+  #output {
+    background: lightgoldenrodyellow;
+  }
+</style>
+<title>UA-CH Retrofill</title>
+
+<h1>UA-CH Retrofill</h1>
+<p>Migrating to User-Agent Client Hints over the old User-Agent string interface
+should be straightforward. However, you may have legacy dependencies or code you
+otherwise cannot change, in which case this retrofill will provide a synthesised
+User-Agent string from the hints you specify.</p>
+<p><code>import { overrideUserAgentUsingClientHints } from './uach-retrofill.js';</code></p>
+<p><code>overrideUserAgentUsingClientHints([</code></p>
+<form>
+  <label><input type="checkbox" name="platform"><code>'platform'</code></label>
+  <label><input type="checkbox" name="platformVersion"><code>'platformVersion'</code></label>
+  <label><input type="checkbox" name="architecture"><code>'architecture'</code></label>
+  <label><input type="checkbox" name="model"><code>'model'</code></label>
+  <label><input type="checkbox" name="uaFullVersion"><code>'uaFullVersion'</code></label>
+</form>
+<p><code>then(() =&gt; {
+document.getElementById('output').textContent = navigator.userAgent;
+});
+</code></p>
+<h2>Generated User-Agent</h2>
+<p><code>navigator.userAgent == <span id="output"></span></code></p>
+
+<script type="module">
+  'use strict';
+
+  import { getUserAgentUsingClientHints, overrideUserAgentUsingClientHints } from './uach-retrofill.js';
+
+  // Just generate the equivalent User-Agent string
+  getUserAgentUsingClientHints(['']).then(newUA => console.log(newUA));
+
+  // Generate the equivalent string and override navigator.userAgent
+  overrideUserAgentUsingClientHints([]).then(() => {
+    document.getElementById('output').textContent = navigator.userAgent;
+  });
+
+  const hintBoxes = document.querySelectorAll('input[type=checkbox]');
+  hintBoxes.forEach(el => {
+    el.addEventListener('change', ev => {
+      let hints = [];
+      hintBoxes.forEach(cb => {
+        if (cb.checked === true) {
+          hints.push(cb.name);
+        }
+      });
+
+      overrideUserAgentUsingClientHints(hints).then(() => {
+        document.getElementById('output').textContent = navigator.userAgent;
+      });
+    });
+  });
+</script>
