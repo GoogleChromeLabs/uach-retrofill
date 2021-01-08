@@ -1,63 +1,71 @@
 /**
  * Copyright 2020 Google LLC
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-// This function's role is to enable smooth transition to the brave new world of User-Agent Client Hints.
-// If you have legacy code that relies on `navigator.userAgent` and which relies on entropy that will go away by default,
-// you *need* to refactor it to use UA-CH.
-// This function is to be used as a stop gap, to enable smooth transition during that period.
-const OverrideUserAgentUsingClientHints = hints => {
+
+// This function's role is to enable smooth transition to the brave new world of
+// User-Agent Client Hints. If you have legacy code that relies on
+// `navigator.userAgent` and which relies on entropy that will go away by
+// default, you *need* to refactor it to use UA-CH. This function is to be used
+// as a stop gap, to enable smooth transition during that period.
+
+/**
+* @param {string[]} hints
+* @return {Promise<string|undefined>} A Promise that resolves to a string if a
+*   UA could be synthesized from client hints, otherwise undefined.
+*/
+async function getUserAgentUsingClientHints(hints) {
   // Helper functions for platform specific strings
   const GetCrosSpecificString = values => {
-    let newUA = "X11; CrOS ";
+    let newUA = 'X11; CrOS ';
     // Working around the lack of bitness value.
-    if (values.architecture == "x86") {
-      newUA += "x86_64";
+    if (values.architecture == 'x86') {
+      newUA += 'x86_64';
     } else {
-      newUA += "aarch64";
+      newUA += 'aarch64';
     }
-    newUA += " ";
+    newUA += ' ';
     newUA += values.platformVersion;
     return newUA;
   }
 
   const GetWindowsSpecificString = values => {
-    let newUA = "Windows NT ";
+    let newUA = 'Windows NT ';
     newUA += values.platformVersion;
-    newUA += "; ";
+    newUA += '; ';
     // Working around the lack of bitness value.
-    if (values.architecture == "x86") {
-      newUA += "x64";
+    if (values.architecture == 'x86') {
+      newUA += 'x64';
     } else {
       // TODO: What's the UA string for windows over ARM??
-      newUA += "arm";
+      newUA += 'arm';
     }
     return newUA;
   }
 
   const GetMacSpecificString = values => {
-    let newUA = "Macintosh; Intel Mac OS X ";
+    let newUA = 'Macintosh; Intel Mac OS X ';
     newUA += values.platformVersion;
     return newUA;
   }
 
   const GetAndroidSpecificString = values => {
-    let newUA = "Linux; Android ";
+    let newUA = 'Linux; Android ';
     newUA += values.platformVersion;
     if (values.model) {
-      newUA += "; ";
+      newUA += '; ';
       newUA += values.model;
     }
     return newUA;
@@ -65,19 +73,19 @@ const OverrideUserAgentUsingClientHints = hints => {
 
   const Initialize = (values, fallback_version) => {
     if (!values.platform) {
-      values.platform = "Windows";
+      values.platform = 'Windows';
     }
     if (!values.platformVersion) {
-      values.platformVersion = "10.0";
+      values.platformVersion = '10.0';
     }
     if (!values.architecture) {
-      values.architecture = "x86";
+      values.architecture = 'x86';
     }
     if (!values.uaFullVersion) {
-      values.uaFullVersion = fallback_version + ".0.0.0";
+      values.uaFullVersion = fallback_version + '.0.0.0';
     }
     if (!values.model) {
-      values.model = "";
+      values.model = '';
     }
     return values;
   }
@@ -91,10 +99,10 @@ const OverrideUserAgentUsingClientHints = hints => {
   let is_edge = false
   let chromium_version;
   navigator.userAgentData.brands.forEach(value => {
-    if (value.brand == "Chromium") {
+    if (value.brand == 'Chromium') {
       is_chromium = true;
       chromium_version = value.version;
-    } else if (value.brand == "Microsoft Edge") {
+    } else if (value.brand == 'Microsoft Edge') {
       is_edge = true;
     }
   });
@@ -107,47 +115,53 @@ const OverrideUserAgentUsingClientHints = hints => {
   return new Promise(resolve => {
     navigator.userAgentData.getHighEntropyValues(hints).then(values => {
       values = Initialize(values, chromium_version);
-      let newUA = "Mozilla/5.0 (";
-      if (values.platform == "Chrome OS") {
+      let newUA = 'Mozilla/5.0 (';
+      if (values.platform == 'Chrome OS') {
         newUA += GetCrosSpecificString(values);
-      } else if (values.platform == "Windows") {
+      } else if (values.platform == 'Windows') {
         newUA += GetWindowsSpecificString(values);
-      } else if (values.platform == "Mac OS X") {
+      } else if (values.platform == 'Mac OS X') {
         newUA += GetMacSpecificString(values);
-      } else if (values.platform == "Android") {
+      } else if (values.platform == 'Android') {
         newUA += GetAndroidSpecificString(values);
       } else {
-        newUA += "X11; Linux x86_64";
+        newUA += 'X11; Linux x86_64';
       }
-      newUA += ") AppleWebKit/537.36 (KHTML, like Gecko) Chrome/";
+      newUA += ') AppleWebKit/537.36 (KHTML, like Gecko) Chrome/';
       newUA += values.uaFullVersion;
       if (navigator.userAgentData.mobile) {
-        newUA += " Mobile";
+        newUA += ' Mobile';
       }
-      newUA += " Safari/537.36";
+      newUA += ' Safari/537.36';
 
       if (is_edge) {
-        newUA += " Edg/";
+        newUA += ' Edg/';
         // Note: The full version Edge includes is not the same as the equivalent Chrome full version
         newUA += values.uaFullVersion;
       }
 
-      // Got a new UA value. Now override `navigator.userAgent`.
-      Object.defineProperty(navigator, 'userAgent', {
-        value: newUA,
-        writable: false
-      });
-      resolve();
+      resolve(newUA);
     })
   })
 }
 
-// Modify the input array below to include the values you *really* need
-// platform - provides the Operating System's name
-// platformVersion - provides the Operating System's version
-// architecture - provides the CPU architecture
-// model - provides the model on Android
-// uaFullVersion - provides the browser's full version, in case the significant version (provided by default) is not enough
-OverrideUserAgentUsingClientHints([""]).then(() => {
-  document.getElementById("output").innerHTML = navigator.userAgent;
-})
+/**
+* @param {string[]} hints
+* @return {Promise<string|undefined>} A Promise that resolves on overriding the
+*   navigator.userAgent string.
+*/
+async function overrideUserAgentUsingClientHints(hints) {
+  return new Promise(resolve => {
+    getUserAgentUsingClientHints(hints).then(newUA => {
+      // Got a new UA value. Now override `navigator.userAgent`.
+      Object.defineProperty(navigator, 'userAgent', {
+        value: newUA,
+        writable: false,
+        configurable: true
+      });
+      resolve();
+    })
+  });
+}
+
+export { getUserAgentUsingClientHints, overrideUserAgentUsingClientHints };
