@@ -7,20 +7,20 @@
   body {
     font-family: sans-serif;
   }
+
+  h1, h2 {
+    font-size: 1rem;
+  }
+
   label {
     display: block;
   }
-  #output {
+  .override-ua {
     background: lightgoldenrodyellow;
   }
 </style>
 <title>UA-CH Retrofill</title>
-
 <h1>UA-CH Retrofill</h1>
-<p>Migrating to User-Agent Client Hints over the old User-Agent string interface
-should be straightforward. However, you may have legacy dependencies or code you
-otherwise cannot change, in which case this retrofill will provide a synthesised
-User-Agent string from the hints you specify.</p>
 <p><code>import { overrideUserAgentUsingClientHints } from './uach-retrofill.js';</code></p>
 <p><code>overrideUserAgentUsingClientHints([</code></p>
 <form>
@@ -31,23 +31,27 @@ User-Agent string from the hints you specify.</p>
   <label><input type="checkbox" name="uaFullVersion"><code>'uaFullVersion'</code></label>
 </form>
 <p><code>then(() =&gt; {
-document.getElementById('output').textContent = navigator.userAgent;
+document.querySelector('.override-ua').textContent = navigator.userAgent;
 });
 </code></p>
+<h2>Initial User-Agent</h2>
+<p><code>navigator.userAgent == <span class="initial-ua"></span></code></p>
 <h2>Generated User-Agent</h2>
-<p><code>navigator.userAgent == <span id="output"></span></code></p>
+<p><code>navigator.userAgent == <span class="override-ua"></span></code></p>
 
 <script type="module">
   'use strict';
 
   import { getUserAgentUsingClientHints, overrideUserAgentUsingClientHints } from './uach-retrofill.js';
 
+  document.querySelector('.initial-ua').textContent = navigator.userAgent;
+
   // Just generate the equivalent User-Agent string
   getUserAgentUsingClientHints(['']).then(newUA => console.log(newUA));
 
   // Generate the equivalent string and override navigator.userAgent
   overrideUserAgentUsingClientHints([]).then(() => {
-    document.getElementById('output').textContent = navigator.userAgent;
+    document.querySelector('.override-ua').textContent = navigator.userAgent;
   });
 
   const hintBoxes = document.querySelectorAll('input[type=checkbox]');
@@ -61,7 +65,7 @@ document.getElementById('output').textContent = navigator.userAgent;
       });
 
       overrideUserAgentUsingClientHints(hints).then(() => {
-        document.getElementById('output').textContent = navigator.userAgent;
+        document.querySelector('.override-ua').textContent = navigator.userAgent;
       });
     });
   });
