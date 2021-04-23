@@ -115,7 +115,7 @@ async function getUserAgentUsingClientHints(hints) {
     navigator.userAgentData.getHighEntropyValues(hints).then(values => {
       values = Initialize(values, chromium_version);
       let newUA = 'Mozilla/5.0 (';
-      if (values.platform == 'Chrome OS') {
+      if (['Chrome OS', 'Chromium OS'].includes(values.platform)) {
         newUA += GetCrosSpecificString(values);
       } else if (values.platform == 'Windows') {
         newUA += GetWindowsSpecificString(values);
