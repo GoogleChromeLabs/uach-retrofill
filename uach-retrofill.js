@@ -121,9 +121,7 @@ async function getUserAgentUsingClientHints(hints) {
         newUA += GetCrosSpecificString(values);
       } else if (values.platform == 'Windows') {
         newUA += GetWindowsSpecificString(values);
-        // TODO: 'Mac OS X' can be removed in the near future
-        // See Issue #13
-      } else if (['macOS', 'Mac OS X'].includes(values.platform)) {
+      } else if (values.platform == 'macOS') {
         newUA += GetMacSpecificString(values);
       } else if (values.platform == 'Android') {
         newUA += GetAndroidSpecificString(values);
