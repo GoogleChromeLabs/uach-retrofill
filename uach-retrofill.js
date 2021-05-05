@@ -70,7 +70,7 @@ async function getUserAgentUsingClientHints(hints) {
     return newUA;
   }
 
-  const Initialize = (values, fallback_version) => {
+  const Initialize = (values) => {
     if (!values.platform) {
       values.platform = 'Windows';
     }
@@ -79,9 +79,6 @@ async function getUserAgentUsingClientHints(hints) {
     }
     if (!values.architecture) {
       values.architecture = 'x86';
-    }
-    if (!values.uaFullVersion) {
-      values.uaFullVersion = fallback_version + '.0.0.0';
     }
     if (!values.model) {
       values.model = '';
@@ -113,7 +110,12 @@ async function getUserAgentUsingClientHints(hints) {
   // Main logic
   return new Promise(resolve => {
     navigator.userAgentData.getHighEntropyValues(hints).then(values => {
-      values = Initialize(values, chromium_version);
+      let initialValues = {
+        platform: navigator.userAgentData?.platform,
+        uaFullVersion: `${chromium_version}.0.0.0`,
+      };
+      values = Object.assign(initialValues, values);
+      values = Initialize(values);
       let newUA = 'Mozilla/5.0 (';
       if (['Chrome OS', 'Chromium OS'].includes(values.platform)) {
         newUA += GetCrosSpecificString(values);
@@ -140,7 +142,6 @@ async function getUserAgentUsingClientHints(hints) {
         // Note: The full version Edge includes is not the same as the equivalent Chrome full version
         newUA += values.uaFullVersion;
       }
-
       resolve(newUA);
     })
   })
