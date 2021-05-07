@@ -29,29 +29,27 @@
 async function getUserAgentUsingClientHints(hints) {
   // Helper functions for platform specific strings
   const GetCrosSpecificString = values => {
-    let newUA = 'X11; CrOS ';
-    // Working around the lack of bitness value.
-    if (values.architecture == 'x86') {
-      newUA += 'x86_64';
-    } else {
-      newUA += 'aarch64';
+    let osCPUFragment = '';
+    if (values.bitness == '64') {
+      if (values.architecture == 'x86') {
+        osCPUFragment = 'x86_64'
+      } else if (values.architecture == 'arm') {
+        osCPUFragment = 'aarch64';
+      }
+    } else if (values.architecture == 'arm' && values.bitness == '32') {
+      osCPUFragment = 'armv7l';
     }
-    newUA += ' ';
-    newUA += values.platformVersion;
-    return newUA;
+    return `X11; CrOS ${osCPUFragment} ${values.platformVersion}`;
   }
 
   const GetWindowsSpecificString = values => {
-    let newUA = 'Windows NT ';
-    newUA += values.platformVersion;
-    newUA += '; ';
-    // Working around the lack of bitness value.
-    if (values.architecture == "x86") {
-      newUA += "Win64; x64";
-    } else {
-      newUA += "ARM";
+    let osCPUFragment = '';
+    if (values.architecture == 'x86' && values.bitness == '64') {
+      osCPUFragment = '; Win64; x64';
+    } else if (values.architecture == 'arm'){
+      osCPUFragment = '; ARM';
     }
-    return newUA;
+    return `Windows NT ${values.platformVersion}${osCPUFragment}`;
   }
 
   const GetMacSpecificString = values => {
@@ -70,18 +68,22 @@ async function getUserAgentUsingClientHints(hints) {
     return newUA;
   }
 
+
   const Initialize = (values) => {
+    if (!values.architecture) {
+      values.architecture = 'x86';
+    }
+    if (!values.bitness) {
+      values.bitness = '64';
+    }
+    if (!values.model) {
+      values.model = '';
+    }
     if (!values.platform) {
       values.platform = 'Windows';
     }
     if (!values.platformVersion) {
       values.platformVersion = '10.0';
-    }
-    if (!values.architecture) {
-      values.architecture = 'x86';
-    }
-    if (!values.model) {
-      values.model = '';
     }
     return values;
   }
@@ -121,9 +123,7 @@ async function getUserAgentUsingClientHints(hints) {
         newUA += GetCrosSpecificString(values);
       } else if (values.platform == 'Windows') {
         newUA += GetWindowsSpecificString(values);
-        // TODO: 'Mac OS X' can be removed in the near future
-        // See Issue #13
-      } else if (['macOS', 'Mac OS X'].includes(values.platform)) {
+      } else if (values.platform == 'macOS') {
         newUA += GetMacSpecificString(values);
       } else if (values.platform == 'Android') {
         newUA += GetAndroidSpecificString(values);
