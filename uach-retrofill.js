@@ -54,7 +54,11 @@ async function getUserAgentUsingClientHints(hints) {
 
   const GetMacSpecificString = values => {
     let newUA = 'Macintosh; Intel Mac OS X ';
-    newUA += values.platformVersion;
+    let macVersion = values.platformVersion;
+    if (macVersion.indexOf('.') > -1) {
+      macVersion = macVersion.split('.').join('_');
+    }
+    newUA += macVersion;
     return newUA;
   }
 
