@@ -92,20 +92,24 @@ async function getUserAgentUsingClientHints(hints) {
     return Promise.resolve();
   }
 
-  // Verify that this is a Chromium
+  // Verify that this is a Chromium-based browser
   let is_chromium = false;
   let is_edge = false
   let chromium_version;
   navigator.userAgentData.brands.forEach(value => {
     if (value.brand == 'Chromium') {
-      is_chromium = true;
+      // Let's double check the UA string as well, so we don't accidentally
+      // capture a headless browser or friendly bot (which should report as
+      // HeadlessChrome or something entirely different).
+      is_chromium = /\sChrome/.test(navigator.userAgent);
       chromium_version = value.version;
     } else if (value.brand == 'Microsoft Edge') {
       is_edge = true;
     }
   });
   if (!is_chromium) {
-    // If this is not a Chromium based browser, the UA string should be very different. So bailing...
+    // If this is not a Chromium-based browser, the UA string should be very
+    // different. So bailing...
     return Promise.resolve();
   }
 
@@ -139,7 +143,8 @@ async function getUserAgentUsingClientHints(hints) {
 
       if (is_edge) {
         newUA += ' Edg/';
-        // Note: The full version Edge includes is not the same as the equivalent Chrome full version
+        // Note: The full version Edge includes is not the same as the
+        // equivalent Chrome full version
         newUA += values.uaFullVersion;
       }
       resolve(newUA);
