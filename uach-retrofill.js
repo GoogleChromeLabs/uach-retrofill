@@ -105,7 +105,8 @@ async function getUserAgentUsingClientHints(hints) {
       // Let's double check the UA string as well, so we don't accidentally
       // capture a headless browser or friendly bot (which should report as
       // HeadlessChrome or something entirely different).
-      is_chromium = /\sChrome/.test(navigator.userAgent);
+      let is_reduced_ua_pattern = new RegExp('AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/\\d+.0.0.0 (Mobile )?Safari/537.36$');
+      is_chromium = is_reduced_ua_pattern.test(navigator.userAgent);
       chromium_version = value.version;
     } else if (value.brand == 'Microsoft Edge') {
       is_edge = true;

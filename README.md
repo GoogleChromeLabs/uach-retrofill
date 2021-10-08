@@ -1,6 +1,7 @@
 # UA-CH retrofill
 
-This snippet illustrates how to reconstruct the legacy `navigator.userAgent` string value from the modern `navigator.userAgentData` values.
+This snippet illustrates how to reconstruct the legacy `navigator.userAgent`
+string value from the modern `navigator.userAgentData` values.
 
 ## Usage instructions
 
