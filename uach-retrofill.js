@@ -39,6 +39,9 @@ async function getUserAgentUsingClientHints(hints) {
     } else if (values.architecture == 'arm' && values.bitness == '32') {
       osCPUFragment = 'armv7l';
     }
+    if (osCPUFragment == '') {
+      return `X11; CrOS ${values.platformVersion}`;
+    }
     return `X11; CrOS ${osCPUFragment} ${values.platformVersion}`;
   }
 
