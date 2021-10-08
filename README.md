@@ -1,7 +1,10 @@
 # UA-CH retrofill
 
 This snippet illustrates how to reconstruct the legacy `navigator.userAgent`
-string value from the modern `navigator.userAgentData` values.
+string value from the modern `navigator.userAgentData` values. The legacy
+`navigator.userAgent` is created only if the current `navigator.userAgent`
+string matches the reduced User-Agent specification outlined in
+[User-Agent Reduction](https://www.chromium.org/updates/ua-reduction).
 
 ## Usage instructions
 
