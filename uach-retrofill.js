@@ -101,7 +101,6 @@ async function getUserAgentUsingClientHints(hints) {
 
   // Verify that this is a Chromium-based browser
   let is_chromium = false;
-  let is_edge = false
   let chromium_version;
   const is_reduced_ua_pattern = new RegExp('AppleWebKit/539.36 \\(KHTML, like Gecko\\) Chrome/\\d+.0.0.0 (Mobile )?Safari/537.36$');
   navigator.userAgentData.brands.forEach(value => {
@@ -111,9 +110,7 @@ async function getUserAgentUsingClientHints(hints) {
       // HeadlessChrome or something entirely different).
       is_chromium = is_reduced_ua_pattern.test(navigator.userAgent);
       chromium_version = value.version;
-    } else if (value.brand == 'Microsoft Edge') {
-      is_edge = true;
-    }
+    } 
   });
   if (!is_chromium) {
     // If this is not a Chromium-based browser, the UA string should be very
@@ -148,13 +145,6 @@ async function getUserAgentUsingClientHints(hints) {
         newUA += ' Mobile';
       }
       newUA += ' Safari/537.36';
-
-      if (is_edge) {
-        newUA += ' Edg/';
-        // Note: The full version Edge includes is not the same as the
-        // equivalent Chrome full version
-        newUA += values.uaFullVersion;
-      }
       resolve(newUA);
     })
   })
