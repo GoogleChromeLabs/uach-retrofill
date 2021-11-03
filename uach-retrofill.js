@@ -102,13 +102,13 @@ async function getUserAgentUsingClientHints(hints) {
   // Verify that this is a Chromium-based browser
   let is_chromium = false;
   let chromium_version;
-  const is_reduced_ua_pattern = new RegExp('AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/\\d+.0.0.0 (Mobile )?Safari/537.36$');
+  const is_chrome_ua_pattern = new RegExp('AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/\\d+.\\d+.\\d+.\\d+ (Mobile )?Safari/537.36$');
   navigator.userAgentData.brands.forEach(value => {
     if (value.brand == 'Chromium') {
       // Let's double check the UA string as well, so we don't accidentally
       // capture a headless browser or friendly bot (which should report as
       // HeadlessChrome or something entirely different).
-      is_chromium = is_reduced_ua_pattern.test(navigator.userAgent);
+      is_chromium = is_chrome_ua_pattern.test(navigator.userAgent);
       chromium_version = value.version;
     } 
   });
