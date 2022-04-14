@@ -51,6 +51,8 @@ async function getUserAgentUsingClientHints(hints) {
       osCPUFragment = "; Win64; x64";
     } else if (values.architecture == "arm") {
       osCPUFragment = "; ARM";
+    } else if (values.wow64 === true) {
+      osCPUFragment = "; WOW64";
     }
     return `Windows NT ${values.platformVersion}${osCPUFragment}`;
   };
@@ -90,6 +92,9 @@ async function getUserAgentUsingClientHints(hints) {
     }
     if (!values.platformVersion) {
       values.platformVersion = "10.0";
+    }
+    if (!values.wow64) {
+      values.wow64 = false;
     }
 
     return values;
