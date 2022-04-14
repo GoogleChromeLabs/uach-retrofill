@@ -17,6 +17,7 @@ If you need any of the following values:
 * `architecture` - the CPU architecture
 * `model` - the model on Android
 * `uaFullVersion` - the browser's full version, in case the significant version (provided by default) is not enough
+* `wow64` - whether or not the browser is running in 32-bit mode on 64-bit Windows
 
 Then you will need to specify these as an array of strings to the parameter in `OverrideUserAgentUsingClientHints()` at the end of the file. For example, if you need the `platform` and `platformVersion`, you would specify:
 
