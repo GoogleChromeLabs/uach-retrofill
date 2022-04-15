@@ -12,11 +12,13 @@ Copy the contents of `uach-retrofill.js` to the relevant location in your projec
 
 If you need any of the following values:
 
-* `platform` - the Operating System's name
-* `platformVersion` - the Operating System's version
 * `architecture` - the CPU architecture
+* `bitness` - the Operating System's underlying CPU architecture bitness (e.g., "32" or "64")
 * `model` - the model on Android
+* `platformVersion` - the Operating System's version
+* `platform` - the Operating System's name
 * `uaFullVersion` - the browser's full version, in case the significant version (provided by default) is not enough
+* `wow64` - whether or not the browser is running in 32-bit mode on 64-bit Windows
 
 Then you will need to specify these as an array of strings to the parameter in `OverrideUserAgentUsingClientHints()` at the end of the file. For example, if you need the `platform` and `platformVersion`, you would specify:
 
