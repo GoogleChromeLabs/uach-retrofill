@@ -165,12 +165,14 @@ async function getUserAgentUsingClientHints(hints) {
 async function overrideUserAgentUsingClientHints(hints) {
   return new Promise((resolve) => {
     getUserAgentUsingClientHints(hints).then((newUA) => {
-      // Got a new UA value. Now override `navigator.userAgent`.
-      Object.defineProperty(navigator, "userAgent", {
-        value: newUA,
-        writable: false,
-        configurable: true,
-      });
+      if (newUA) {
+        // Got a new UA value. Now override `navigator.userAgent`.
+        Object.defineProperty(navigator, "userAgent", {
+          value: newUA,
+          writable: false,
+          configurable: true,
+        });
+      }
       resolve();
     });
   });
