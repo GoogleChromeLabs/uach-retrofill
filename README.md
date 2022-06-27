@@ -28,6 +28,10 @@ OverrideUserAgentUsingClientHints(["platform", "platformVersion"]).then(() => {
 })
 ```
 
+## Demo
+
+https://googlechromelabs.github.io/uach-retrofill/demo.html
+
 ## Contributing
 
 Please see the [Code of Conduct](docs/code-of-conduct.md) and [Contributing](docs/contributing.md) guides.
