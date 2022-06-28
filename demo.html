@@ -42,13 +42,9 @@ document.querySelector('.override-ua').textContent = navigator.userAgent;
 
 <script type="module">
   'use strict';
-
   import { getUserAgentUsingClientHints, overrideUserAgentUsingClientHints } from './uach-retrofill.js';
 
   document.querySelector('.initial-ua').textContent = navigator.userAgent;
-
-  // Just generate the equivalent User-Agent string
-  getUserAgentUsingClientHints(['']).then(newUA => console.log(newUA));
 
   // Generate the equivalent string and override navigator.userAgent
   overrideUserAgentUsingClientHints([]).then(() => {
