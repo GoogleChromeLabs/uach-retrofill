@@ -119,9 +119,10 @@ async function getUserAgentUsingClientHints(hints) {
       chromium_version = value.version;
     }
   });
-  if (!is_chromium) {
+  if (!is_chromium || chromium_version < 100) {
     // If this is not a Chromium-based browser, the UA string should be very
-    // different. So bailing...
+    // different. Or, if this is a Chromium lower than 100, it doesn't have
+    // all the hints we rely on. So let's bail.
     return Promise.resolve();
   }
 
