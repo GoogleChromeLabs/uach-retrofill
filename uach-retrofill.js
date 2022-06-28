@@ -100,7 +100,7 @@ async function getUserAgentUsingClientHints(hints) {
     return values;
   };
 
-  if (!navigator.userAgentData || Date.now() > 1640995199000) {
+  if (!navigator.userAgentData) {
     return Promise.resolve();
   }
 
