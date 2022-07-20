@@ -54,7 +54,9 @@ async function getUserAgentUsingClientHints(hints) {
     } else if (values.wow64 === true) {
       osCPUFragment = "; WOW64";
     }
-    return `Windows NT ${values.platformVersion}${osCPUFragment}`;
+    return `Windows NT ${getWindowsPlatformVersion(
+      values.platformVersion
+    )}${osCPUFragment}`;
   };
 
   const GetMacSpecificString = (values) => {
@@ -158,6 +160,22 @@ async function getUserAgentUsingClientHints(hints) {
   });
 }
 
+function getWindowsPlatformVersion(platformVersion) {
+  // https://wicg.github.io/ua-client-hints/#get-the-legacy-windows-version-number
+  const versionMap = new Map([
+    ["0.3.0", "6.3"], // Windows 8.1
+    ["0.2.0", "6.2"], // Windows 8
+    ["0.1.0", "6.1"], // Windows 7
+  ]);
+
+  if (versionMap.has(platformVersion)) {
+    return versionMap.get(platformVersion);
+  }
+
+  // Windows 10 and above send "Windows NT 10.0"
+  return "10.0";
+}
+
 /**
  * @param {string[]} hints
  * @return {Promise<string|undefined>} A Promise that resolves on overriding the
@@ -179,4 +197,5 @@ async function overrideUserAgentUsingClientHints(hints) {
   });
 }
 
+export const exportedForTests = { getWindowsPlatformVersion };
 export { getUserAgentUsingClientHints, overrideUserAgentUsingClientHints };

@@ -1,0 +1,22 @@
+{
+  "name": "uach-retrofill",
+  "version": "1.0.0",
+  "description": "This snippet illustrates how to reconstruct the legacy `navigator.userAgent` string value from the modern `navigator.userAgentData` values. The legacy `navigator.userAgent` is created only if the current `navigator.userAgent` string matches the reduced User-Agent specification outlined in [User-Agent Reduction](https://www.chromium.org/updates/ua-reduction).",
+  "main": "uach-retrofill.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoogleChromeLabs/uach-retrofill.git"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/GoogleChromeLabs/uach-retrofill/issues"
+  },
+  "homepage": "https://github.com/GoogleChromeLabs/uach-retrofill#readme",
+  "devDependencies": {
+    "ava": "^4.3.0"
+  }
+}
