@@ -133,7 +133,7 @@ async function getUserAgentUsingClientHints(hints) {
     navigator.userAgentData.getHighEntropyValues(hints).then((values) => {
       let initialValues = {
         platform: navigator.userAgentData?.platform,
-        uaFullVersion: `${chromium_version}.0.0.0`,
+        version: chromium_version,
       };
       values = Object.assign(initialValues, values);
       values = Initialize(values);
@@ -150,7 +150,7 @@ async function getUserAgentUsingClientHints(hints) {
         newUA += "X11; Linux x86_64";
       }
       newUA += ") AppleWebKit/537.36 (KHTML, like Gecko) Chrome/";
-      newUA += values.uaFullVersion;
+      newUA += getVersion(values?.fullVersionList, initialValues.version);
       if (navigator.userAgentData.mobile) {
         newUA += " Mobile";
       }
@@ -158,6 +158,14 @@ async function getUserAgentUsingClientHints(hints) {
       resolve(newUA);
     });
   });
+}
+
+function getVersion(fullVersionList, majorVersion) {
+  if (!fullVersionList) {
+    return `${majorVersion}.0.0.0`;
+  }
+
+  return fullVersionList.find((item) => item.brand == "Google Chrome")?.version;
 }
 
 function getWindowsPlatformVersion(platformVersion) {
@@ -197,5 +205,5 @@ async function overrideUserAgentUsingClientHints(hints) {
   });
 }
 
-export const exportedForTests = { getWindowsPlatformVersion };
+export const exportedForTests = { getVersion, getWindowsPlatformVersion };
 export { getUserAgentUsingClientHints, overrideUserAgentUsingClientHints };
