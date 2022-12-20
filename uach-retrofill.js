@@ -161,11 +161,12 @@ async function getUserAgentUsingClientHints(hints) {
 }
 
 function getVersion(fullVersionList, majorVersion) {
-  if (!fullVersionList) {
-    return `${majorVersion}.0.0.0`;
-  }
-
-  return fullVersionList.find((item) => item.brand == "Google Chrome")?.version;
+  // If we don't get a fullVersionList, or it's somehow undefined, return
+  // the reduced version number.
+  return (
+    fullVersionList?.find((item) => item.brand == "Google Chrome")?.version ||
+    `${majorVersion}.0.0.0`
+  );
 }
 
 function getWindowsPlatformVersion(platformVersion) {

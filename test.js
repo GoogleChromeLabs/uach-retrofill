@@ -34,9 +34,12 @@ test("test getVersion helper", (t) => {
     { brand: "lol ok", version: "1.2.3.4" },
     { brand: "Chromium", version: "105.0.5195.125" },
   ];
+  const fullVersion = "105.0.5195.125";
   const majorVersion = "105";
+  const reducedVersion = "105.0.0.0";
 
-  t.is(getVersion(fullVersionList, majorVersion), "105.0.5195.125");
-  t.is(getVersion(fullVersionList, undefined), "105.0.5195.125");
-  t.is(getVersion(undefined, majorVersion), "105.0.0.0");
+  t.is(getVersion(fullVersionList, majorVersion), fullVersion);
+  t.is(getVersion(fullVersionList, undefined), fullVersion);
+  t.is(getVersion(undefined, majorVersion), reducedVersion);
+  t.is(getVersion(fullVersionList.slice(1), majorVersion), reducedVersion);
 });
