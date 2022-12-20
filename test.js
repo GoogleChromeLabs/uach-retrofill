@@ -16,7 +16,7 @@
 
 import test from "ava";
 import { exportedForTests } from "./uach-retrofill.js";
-const { getWindowsPlatformVersion } = exportedForTests;
+const { getVersion, getWindowsPlatformVersion } = exportedForTests;
 
 test("test getWindowsPlatformVersion helper", (t) => {
   t.is(getWindowsPlatformVersion("0.3.0"), "6.3");
@@ -26,4 +26,20 @@ test("test getWindowsPlatformVersion helper", (t) => {
   for (let defaultRV of ["13.0.0", "", undefined, null, 10, "0.0.0"]) {
     t.is(getWindowsPlatformVersion(defaultRV), "10.0");
   }
+});
+
+test("test getVersion helper", (t) => {
+  const fullVersionList = [
+    { brand: "Google Chrome", version: "105.0.5195.125" },
+    { brand: "lol ok", version: "1.2.3.4" },
+    { brand: "Chromium", version: "105.0.5195.125" },
+  ];
+  const fullVersion = "105.0.5195.125";
+  const majorVersion = "105";
+  const reducedVersion = "105.0.0.0";
+
+  t.is(getVersion(fullVersionList, majorVersion), fullVersion);
+  t.is(getVersion(fullVersionList, undefined), fullVersion);
+  t.is(getVersion(undefined, majorVersion), reducedVersion);
+  t.is(getVersion(fullVersionList.slice(1), majorVersion), reducedVersion);
 });
