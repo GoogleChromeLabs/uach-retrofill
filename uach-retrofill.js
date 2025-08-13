@@ -181,6 +181,15 @@ function getWindowsPlatformVersion(platformVersion) {
     return versionMap.get(platformVersion);
   }
 
+  // Check for Windows 11 and above using high entropy values 
+  if (typeof navigator !== 'undefined' && navigator.userAgentData && navigator.userAgentData.platform === "Windows") { 
+    const majorPlatformVersion = parseInt(platformVersion.split('.')[0]); 
+    if (majorPlatformVersion >= 13) { 
+      // Windows 11 or later 
+      return "11.0"; 
+    } 
+  }
+
   // Windows 10 and above send "Windows NT 10.0"
   return "10.0";
 }
