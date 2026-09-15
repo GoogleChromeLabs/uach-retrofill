@@ -1,3 +1,5 @@
+**This repo is no longer maintained**.
+
 # UA-CH retrofill
 
 This snippet illustrates how to reconstruct the legacy `navigator.userAgent`
